@@ -21,6 +21,41 @@ BACKGROUND_COLOR = "#FFFCF8"  # warm off-white
 SURFACE_COLOR = "#F8F1E7"  # warm sand
 BORDER_COLOR = "#EADFD0"  # warm taupe
 
+# Four accent families, one per thematic group of panels (PRD §6's own
+# grouping: closest-to-the-posting, discovery/path, forward-looking,
+# practical/decode). `badge` is one of st.badge()'s built-in color names —
+# used for each petal's icon+title pill — and `hex` is the same family used
+# for the card's own top accent + faint tint, so the pill and its card
+# always agree without hand-matching two palettes.
+PANEL_GROUPS = {
+    "identity": {"badge": "primary", "hex": ACCENT_COLOR},  # 01-04, terracotta (brand accent)
+    "discovery": {"badge": "blue", "hex": "#3D6FA6"},  # 05-08
+    "forecast": {"badge": "green", "hex": "#2F8659"},  # 09-11
+    "practical": {"badge": "violet", "hex": "#7C5AA6"},  # 12-14
+}
+
+# (icon, group) per panel number. Icons are Material Symbols (rounded) —
+# not emoji, per PRD §8's "no emoji" rule — chosen to be legible at a glance
+# and to describe what each panel answers, not just decorate it.
+PETAL_META = {
+    1: ("work", "identity"),
+    2: ("school", "identity"),
+    3: ("badge", "identity"),
+    4: ("psychology", "identity"),
+    5: ("menu_book", "discovery"),
+    6: ("groups", "discovery"),
+    7: ("compare_arrows", "discovery"),
+    8: ("route", "discovery"),
+    9: ("trending_up", "forecast"),
+    10: ("auto_awesome", "forecast"),
+    11: ("smart_toy", "forecast"),
+    12: ("translate", "practical"),
+    13: ("calendar_month", "practical"),
+    14: ("help", "practical"),
+}
+
+SEED_ICON = "local_florist"  # the bloom's own icon — a flower, not a decoration
+
 APP_NAME = "SenSym Job Explainer"
 APP_TAGLINE = "Paste a job posting. Understand the job."
 PRIVACY_LINE = "Nothing you paste is stored."
@@ -115,17 +150,29 @@ def inject_base_css() -> None:
         .je-tagline {{
             font-size: 1.05rem;
             color: {MUTED_TEXT_COLOR};
-            margin-bottom: 1.4rem;
+            margin-bottom: 0.7rem;
+        }}
+
+        /* A quiet preview of the bloom's four panel colors (PANEL_GROUPS) —
+        the only spot of extra color State A gets, per PRD §8.1's "nothing
+        else." */
+        .je-rule {{
+            height: 4px;
+            width: 88px;
+            border-radius: 4px;
+            margin-bottom: 1.3rem;
+            background: linear-gradient(
+                90deg,
+                {PANEL_GROUPS["identity"]["hex"]} 0%,
+                {PANEL_GROUPS["discovery"]["hex"]} 33%,
+                {PANEL_GROUPS["forecast"]["hex"]} 66%,
+                {PANEL_GROUPS["practical"]["hex"]} 100%
+            );
         }}
 
         .je-privacy-inline {{
             font-size: 0.82rem;
             color: {MUTED_TEXT_COLOR};
-        }}
-
-        .je-example-link {{
-            font-size: 0.85rem;
-            margin-top: 0.4rem;
         }}
 
         /* Settings popover trigger styled as a quiet link, not a button */
@@ -144,6 +191,10 @@ def inject_base_css() -> None:
         }}
 
         /* "Try an example" / plain-link buttons */
+        .je-link-button {{
+            margin-top: 0.4rem;
+        }}
+
         .je-link-button button {{
             background: transparent !important;
             border: none !important;
@@ -196,13 +247,7 @@ def inject_base_css() -> None:
             font-size: 1.05rem;
             font-weight: 700;
             color: {TEXT_COLOR};
-            margin-bottom: 0.15rem;
-        }}
-
-        .je-seed-meta {{
-            font-size: 0.82rem;
-            color: {MUTED_TEXT_COLOR};
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.4rem;
         }}
 
         .je-seed-status {{
@@ -222,18 +267,19 @@ def inject_base_css() -> None:
 
         /* --- Petal cards (State C) --- */
 
-        .je-petal-title {{
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: {ACCENT_COLOR};
-            margin-bottom: 0.35rem;
-        }}
-
         .je-petal-error {{
             font-size: 0.88rem;
             color: {MUTED_TEXT_COLOR};
             font-style: italic;
         }}
+
+        /* Each petal's icon+title is an st.badge() pill (see PETAL_META);
+        give it a little breathing room from the content below it. */
+        .stBadge {{
+            margin-bottom: 0.5rem;
+        }}
+
+        {_petal_accent_css()}
 
         hr {{
             border-color: {BORDER_COLOR};
@@ -257,6 +303,31 @@ def inject_base_css() -> None:
         """,
         unsafe_allow_html=True,
     )
+
+
+def _petal_accent_css() -> str:
+    """A colored top border plus a faint top-down tint per petal, grouped by
+    PANEL_GROUPS — always on (unlike bloom_css()'s reveal), so the grid
+    reads as four families of panels at a glance even before the reveal."""
+    rules = []
+    for petal in PETALS:
+        _icon, group = PETAL_META[petal.number]
+        hex_color = PANEL_GROUPS[group]["hex"]
+        rules.append(
+            f"""
+            .st-key-petal-{petal.number:02d} {{
+                border-top: 3px solid {hex_color} !important;
+                background: linear-gradient(180deg, {hex_color}14 0%, {BACKGROUND_COLOR} 60%) !important;
+            }}
+            """
+        )
+    return "\n".join(rules)
+
+
+def petal_badge(number: int) -> tuple[str, str]:
+    """(material-icon shortcode, st.badge color name) for a petal's icon+title pill."""
+    icon, group = PETAL_META[number]
+    return f":material/{icon}:", PANEL_GROUPS[group]["badge"]
 
 
 def _resting_state_selector() -> str:
@@ -340,3 +411,4 @@ def render_landing_header() -> None:
     st.markdown(f'<div class="je-wordmark">{WORDMARK_TEXT}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="je-title">{APP_NAME}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="je-tagline">{APP_TAGLINE}</div>', unsafe_allow_html=True)
+    st.markdown('<div class="je-rule"></div>', unsafe_allow_html=True)

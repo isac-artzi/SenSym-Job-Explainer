@@ -129,12 +129,32 @@ def _first_line(text: str) -> str:
 
 
 def _meta_line(analysis: dict) -> str:
-    bits = [
-        analysis.get(k)
-        for k in ("company", "location", "seniority")
+    company = analysis.get("company")
+    return company if company and str(company).strip().lower() not in ("", "not stated") else ""
+
+
+# (analysis key, icon, st.badge color) for the seed card's small tag row —
+# only shown when the posting actually said something for that field, per
+# the honesty rule against filling in what a posting left vague.
+_SEED_BADGE_FIELDS = [
+    ("seniority", "work", "blue"),
+    ("work_arrangement", "home_work", "green"),
+    ("location", "place", "violet"),
+]
+
+
+def _render_seed_badges(analysis: dict) -> None:
+    fields = [
+        (analysis.get(key), icon, color)
+        for key, icon, color in _SEED_BADGE_FIELDS
+        if analysis.get(key) and str(analysis[key]).strip().lower() not in ("", "not stated")
     ]
-    bits = [b for b in bits if b and str(b).strip().lower() not in ("", "not stated")]
-    return " · ".join(str(b) for b in bits)
+    if not fields:
+        return
+    cols = st.columns(len(fields))
+    for col, (value, icon, color) in zip(cols, fields):
+        with col:
+            st.badge(str(value), icon=f":material/{icon}:", color=color)
 
 
 # --- Settings popover (State A only, per PRD §8.1) ------------------------
@@ -143,7 +163,7 @@ def _meta_line(analysis: dict) -> str:
 def _render_settings_popover() -> None:
     _, right = st.columns([6, 1])
     with right:
-        with st.popover("Settings", use_container_width=True):
+        with st.popover("Settings", icon=":material/tune:", use_container_width=True):
             uploaded = st.file_uploader(
                 "Upload a saved config", type=["env"], help=ui.TOOLTIPS["config_upload"], key="cfg_upload"
             )
@@ -182,6 +202,7 @@ def _render_settings_popover() -> None:
                 data=_generate_env_text(),
                 file_name="job_explainer.env",
                 mime="text/plain",
+                icon=":material/download:",
                 help=ui.TOOLTIPS["download_config"],
                 key="download_cfg_btn",
                 use_container_width=True,
@@ -213,7 +234,11 @@ def _render_landing() -> None:
             button_col, privacy_col = st.columns([1, 2])
             with button_col:
                 clicked = st.button(
-                    "Explain this job", type="primary", use_container_width=True, key="explain_btn"
+                    "Explain this job",
+                    type="primary",
+                    icon=":material/bolt:",
+                    use_container_width=True,
+                    key="explain_btn",
                 )
             with privacy_col:
                 st.markdown(
@@ -223,14 +248,19 @@ def _render_landing() -> None:
                 # TODO(v1.1): cost estimate here, next to the privacy line
                 # (job_explainer/cost.py is ready; just not wired into the UI yet).
 
-            st.markdown('<div class="je-example-link">', unsafe_allow_html=True)
+            st.markdown('<div class="je-link-button">', unsafe_allow_html=True)
             # on_click, not a checked return value: by the time a plain
             # `if st.button(...):` branch runs, posting_input's text_area has
             # already been instantiated this script run, and Streamlit
             # forbids writing to a widget's session_state key after that.
             # on_click callbacks run first, before the rerun that
             # re-instantiates the widget.
-            st.button("Try an example", key="try_example_btn", on_click=_apply_example)
+            st.button(
+                "Try an example",
+                icon=":material/lightbulb:",
+                key="try_example_btn",
+                on_click=_apply_example,
+            )
             st.markdown("</div>", unsafe_allow_html=True)
 
         if clicked:
@@ -311,9 +341,10 @@ def _render_seed_card(analysis: dict, petal_results: dict[str, PetalResult]) -> 
             f'<div class="je-seed-title">{html.escape(analysis.get("title") or "This job")}</div>',
             unsafe_allow_html=True,
         )
-        meta = _meta_line(analysis)
-        if meta:
-            st.markdown(f'<div class="je-seed-meta">{html.escape(meta)}</div>', unsafe_allow_html=True)
+        company = _meta_line(analysis)
+        if company:
+            st.badge(company, icon=f":material/{ui.SEED_ICON}:", color="primary")
+        _render_seed_badges(analysis)
 
         document = render.render_report(analysis, petal_results)
         docx_bytes = render.build_docx_bytes(document)
@@ -324,19 +355,25 @@ def _render_seed_card(analysis: dict, petal_results: dict[str, PetalResult]) -> 
             data=docx_bytes,
             file_name=render.report_filename(analysis),
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            icon=":material/description:",
             use_container_width=True,
             key="download_docx_btn",
         )
 
         col_a, col_b = st.columns(2)
         with col_a:
-            label = "Back to the bloom" if st.session_state.get("read_as_page") else "Read as a page"
-            if st.button(label, use_container_width=True, key="toggle_read_page"):
+            if st.session_state.get("read_as_page"):
+                label, icon = "Back to the bloom", "grid_view"
+            else:
+                label, icon = "Read as a page", "article"
+            if st.button(label, icon=f":material/{icon}:", use_container_width=True, key="toggle_read_page"):
                 st.session_state["read_as_page"] = not st.session_state.get("read_as_page", False)
                 st.session_state["just_bloomed"] = False
                 st.rerun()
         with col_b:
-            if st.button("Start over", use_container_width=True, key="start_over_btn"):
+            if st.button(
+                "Start over", icon=":material/restart_alt:", use_container_width=True, key="start_over_btn"
+            ):
                 _start_over()
                 st.rerun()
 
@@ -345,6 +382,7 @@ def _render_seed_card(analysis: dict, petal_results: dict[str, PetalResult]) -> 
             data=json_bytes,
             file_name="explanation.json",
             mime="application/json",
+            icon=":material/data_object:",
             use_container_width=True,
             key="download_json_btn",
         )
@@ -365,15 +403,13 @@ def _retry_petal(petal) -> None:
 
 
 def _render_petal_card(petal, result: PetalResult | None) -> None:
+    icon, badge_color = ui.petal_badge(petal.number)
     with st.container(key=f"petal-{petal.number:02d}", border=True, height=ui.PETAL_CARD_HEIGHT):
-        st.markdown(
-            f'<div class="je-petal-title">{petal.number:02d} · {html.escape(petal.title)}</div>',
-            unsafe_allow_html=True,
-        )
+        st.badge(f"{petal.number:02d} · {petal.title}", icon=icon, color=badge_color)
         if result is None or result.error:
             message = result.error if result and result.error else "This panel wasn't generated."
             st.markdown(f'<div class="je-petal-error">{html.escape(message)}</div>', unsafe_allow_html=True)
-            if st.button("Try again", key=f"retry_{petal.key}"):
+            if st.button("Try again", icon=":material/refresh:", key=f"retry_{petal.key}"):
                 _retry_petal(petal)
             # TODO(v1.1): Regenerate control on every panel, not just failed ones.
         else:
@@ -400,9 +436,10 @@ def _render_page_view(analysis: dict, petal_results: dict[str, PetalResult]) -> 
             f'<div class="je-title">{html.escape(analysis.get("title") or "This job")}</div>',
             unsafe_allow_html=True,
         )
-        meta = _meta_line(analysis)
-        if meta:
-            st.markdown(f'<div class="je-tagline">{html.escape(meta)}</div>', unsafe_allow_html=True)
+        company = _meta_line(analysis)
+        if company:
+            st.badge(company, icon=f":material/{ui.SEED_ICON}:", color="primary")
+        _render_seed_badges(analysis)
 
         document = render.render_report(analysis, petal_results)
         docx_bytes = render.build_docx_bytes(document)
@@ -414,15 +451,23 @@ def _render_page_view(analysis: dict, petal_results: dict[str, PetalResult]) -> 
                 data=docx_bytes,
                 file_name=render.report_filename(analysis),
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                icon=":material/description:",
                 use_container_width=True,
                 key="download_docx_btn_page",
             )
         with col_b:
-            if st.button("Back to the bloom", use_container_width=True, key="toggle_read_page_2"):
+            if st.button(
+                "Back to the bloom",
+                icon=":material/grid_view:",
+                use_container_width=True,
+                key="toggle_read_page_2",
+            ):
                 st.session_state["read_as_page"] = False
                 st.rerun()
         with col_c:
-            if st.button("Start over", use_container_width=True, key="start_over_btn_2"):
+            if st.button(
+                "Start over", icon=":material/restart_alt:", use_container_width=True, key="start_over_btn_2"
+            ):
                 _start_over()
                 st.rerun()
 
@@ -430,7 +475,8 @@ def _render_page_view(analysis: dict, petal_results: dict[str, PetalResult]) -> 
 
         for petal in PETALS:
             result = petal_results.get(petal.key)
-            st.markdown(f"### {petal.number:02d}. {petal.title}")
+            icon, badge_color = ui.petal_badge(petal.number)
+            st.badge(f"{petal.number:02d} · {petal.title}", icon=icon, color=badge_color)
             if result is None or result.error:
                 message = result.error if result and result.error else "This panel wasn't generated."
                 st.markdown(f"*{message}*")
