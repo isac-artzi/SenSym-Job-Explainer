@@ -1,0 +1,8 @@
+streamlit>=1.39
+python-docx>=1.1
+python-dotenv>=1.0
+requests>=2.32
+beautifulsoup4>=4.12
+anthropic>=0.34
+openai>=1.40
+google-genai>=0.3
