@@ -68,13 +68,11 @@ def complete_json(config: LLMConfig, prompt: str, schema_hint: str) -> dict:
     """
     full_prompt = f"{prompt}\n\n{schema_hint}\n\nRespond with valid JSON only. No prose, no markdown fences."
 
-    last_error = None
-    for attempt in range(MAX_RETRIES_ON_BAD_JSON + 1):
+    for _attempt in range(MAX_RETRIES_ON_BAD_JSON + 1):
         raw = complete(config, full_prompt)
         try:
             return _parse_json(raw)
         except (json.JSONDecodeError, ValueError) as exc:
-            last_error = exc
             full_prompt = (
                 f"{prompt}\n\n{schema_hint}\n\n"
                 "Respond with valid JSON only. No prose, no markdown fences.\n\n"
