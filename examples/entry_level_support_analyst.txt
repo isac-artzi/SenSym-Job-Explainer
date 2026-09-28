@@ -1,0 +1,41 @@
+Junior IT Support Analyst — Rivergate Health Systems
+
+Rivergate Health Systems is a regional network of outpatient clinics looking
+for a Junior IT Support Analyst to join our four-person help desk team. This
+is an entry-level, on-site role based at our Millbrook office.
+
+What you'll do:
+- Answer help desk tickets and walk-in requests from clinic staff — password
+  resets, printer issues, slow computers, and the occasional "the scanner is
+  making a weird noise."
+- Set up new laptops and badge-in workstations for new hires using our
+  imaging tool.
+- Keep our internal knowledge base articles up to date as you learn new
+  fixes.
+- Escalate networking and server issues to our senior infrastructure team
+  and follow up until they're resolved.
+- Rotate through a light on-call schedule (about one week every six weeks)
+  for after-hours emergencies at the clinics.
+
+What we're looking for:
+- Comfortable troubleshooting Windows 10/11 and basic networking (you know
+  what a DNS server does, roughly).
+- Some experience with a ticketing system (Zendesk, Freshdesk, or similar)
+  — a class project counts.
+- A CompTIA A+ certification, or actively working toward one.
+- Patience. Half the job is explaining the same fix to a stressed nurse in a
+  calm voice.
+- Reliable transportation to our Millbrook office; this is not a remote
+  position.
+
+Nice to have:
+- Familiarity with HIPAA and why we're careful about patient data on shared
+  workstations.
+- Any exposure to Active Directory user management.
+
+This is a great first IT job for someone who wants hands-on experience
+before specializing in networking, security, or systems administration.
+Rivergate promotes from within, and two of our current senior analysts
+started on this same help desk team.
+
+Rivergate Health Systems is an equal opportunity employer.

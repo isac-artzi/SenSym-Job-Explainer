@@ -1,0 +1,45 @@
+Staff Machine Learning Platform Engineer — Northgrove Analytics
+
+Northgrove Analytics builds forecasting tools for mid-size logistics
+companies. We're looking for a Staff Machine Learning Platform Engineer to
+lead the team that keeps our model training and serving infrastructure fast,
+reliable, and boring in the best way — nobody should ever have to think
+about it unless something's wrong.
+
+You will:
+- Own the architecture of our internal ML platform: feature store, training
+  orchestration, model registry, and online serving.
+- Set technical direction for a team of five engineers, including reviewing
+  designs and mentoring two engineers who are newer to distributed systems.
+- Partner directly with the applied research team so new model architectures
+  make it from notebook to production without a six-week integration slog.
+- Drive down training and inference cost without regressing latency SLAs —
+  this is a standing, ongoing responsibility, not a one-time project.
+- Represent the platform team in quarterly planning with engineering
+  leadership.
+
+What you bring:
+- 8+ years in software or ML infrastructure engineering, with at least 3 of
+  those years owning a platform other teams depend on.
+- Deep hands-on experience with distributed training (data or model
+  parallelism) and with serving infrastructure at meaningful scale.
+- A track record of technical leadership — not necessarily formal
+  management, but designs other engineers have built on.
+- Strong Python and comfort reading/writing performance-sensitive code in a
+  systems language when the situation calls for it.
+- Judgment about when to build versus buy; we are a lean infra team and
+  can't own everything ourselves.
+
+Nice to have:
+- Experience specifically in logistics, supply chain, or another
+  operations-heavy forecasting domain.
+- Familiarity with cost-attribution tooling for shared GPU clusters.
+
+This role reports to the Director of Engineering and is one of two Staff
+positions on the infrastructure org. Northgrove is a Series C company of
+about 140 people; the platform team has grown from two to five engineers in
+the last year and this hire is meant to give the team a clear technical
+anchor as it keeps growing.
+
+Northgrove Analytics offers a hybrid arrangement out of our downtown office,
+with two in-office days expected per week.
