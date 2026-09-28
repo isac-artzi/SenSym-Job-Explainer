@@ -1,0 +1,20 @@
+JOB POSTING:
+$job_text
+
+JOB ANALYSIS:
+$analysis_json
+
+TASK:
+Describe what a typical week in this role probably looks like: the meetings, the deliverables, the tools in use, who the person talks to, and what "a good week" looks like by the end. This is inference from the posting and the role — say so.
+
+SHAPE:
+Write flowing prose. No heading, no list, no table.
+
+Rules:
+- No invented URLs. Name a resource by name; never invent or output a link.
+- No named individuals.
+- No specific salary figures unless the posting states one.
+- State facts from the posting as facts. Label everything else as inference or judgment, in your own words (e.g. "The posting doesn't say, but...").
+- Write at a $reading_level reading level.
+- No emoji.
+- Markdown only: headings no deeper than ###, bullets, numbered lists, bold, italic, and pipe tables. Nothing else.

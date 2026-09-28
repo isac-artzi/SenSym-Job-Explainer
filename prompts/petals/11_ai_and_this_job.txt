@@ -1,0 +1,20 @@
+JOB POSTING:
+$job_text
+
+JOB ANALYSIS:
+$analysis_json
+
+TASK:
+Assess which tasks in this posting AI tools will likely absorb entirely, which they will amplify rather than replace, and what a candidate should do to be the person directing the tools rather than competing with them.
+
+SHAPE:
+Return three short bulleted lists, each introduced by its own bold label: "**Likely absorbed**", "**Likely amplified**", and "**How to stay ahead of it**". No heading, no table.
+
+Rules:
+- No invented URLs. Name a resource by name; never invent or output a link.
+- No named individuals.
+- No specific salary figures unless the posting states one.
+- State facts from the posting as facts. Label everything else as inference or judgment, in your own words (e.g. "The posting doesn't say, but...").
+- Write at a $reading_level reading level.
+- No emoji.
+- Markdown only: headings no deeper than ###, bullets, numbered lists, bold, italic, and pipe tables. Nothing else.

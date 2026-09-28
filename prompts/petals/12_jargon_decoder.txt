@@ -1,0 +1,20 @@
+JOB POSTING:
+$job_text
+
+JOB ANALYSIS:
+$analysis_json
+
+TASK:
+Find every acronym, tool name, and insider phrase in the posting that a student might not know, and decode each in one plain-English line.
+
+SHAPE:
+Return one pipe table with exactly these columns: "Term", "Meaning here". No heading above the table. If the posting genuinely has no jargon worth decoding, return a table with one row saying so.
+
+Rules:
+- No invented URLs. Name a resource by name; never invent or output a link.
+- No named individuals.
+- No specific salary figures unless the posting states one.
+- State facts from the posting as facts. Label everything else as inference or judgment, in your own words (e.g. "The posting doesn't say, but...").
+- Write at a $reading_level reading level.
+- No emoji.
+- Markdown only: headings no deeper than ###, bullets, numbered lists, bold, italic, and pipe tables. Nothing else.

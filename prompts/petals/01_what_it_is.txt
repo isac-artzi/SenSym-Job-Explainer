@@ -1,0 +1,20 @@
+JOB POSTING:
+$job_text
+
+JOB ANALYSIS:
+$analysis_json
+
+TASK:
+Explain the role in plain English: what the person actually does day to day, for whom, and why the company needs it. Three or four sentences.
+
+SHAPE:
+Write flowing prose. No heading, no list, no table — just the paragraph.
+
+Rules:
+- No invented URLs. Name a resource by name; never invent or output a link.
+- No named individuals.
+- No specific salary figures unless the posting states one.
+- State facts from the posting as facts. Label everything else as inference or judgment, in your own words (e.g. "The posting doesn't say, but...").
+- Write at a $reading_level reading level.
+- No emoji.
+- Markdown only: headings no deeper than ###, bullets, numbered lists, bold, italic, and pipe tables. Nothing else.

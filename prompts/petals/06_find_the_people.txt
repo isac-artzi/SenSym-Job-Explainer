@@ -1,0 +1,20 @@
+JOB POSTING:
+$job_text
+
+JOB ANALYSIS:
+$analysis_json
+
+TASK:
+Explain how to find professionals already doing this job and reach them respectfully: how to phrase a LinkedIn search for this role, how to use alumni networks, and meetups or conferences by name that fit this field. Then write one short template message for requesting an informational interview. Never name a specific individual.
+
+SHAPE:
+A bulleted list of finding strategies, followed by the template message as a short blockquote-style paragraph. No heading, no table.
+
+Rules:
+- No invented URLs. Name a resource by name; never invent or output a link.
+- No named individuals.
+- No specific salary figures unless the posting states one.
+- State facts from the posting as facts. Label everything else as inference or judgment, in your own words (e.g. "The posting doesn't say, but...").
+- Write at a $reading_level reading level.
+- No emoji.
+- Markdown only: headings no deeper than ###, bullets, numbered lists, bold, italic, and pipe tables. Nothing else.
